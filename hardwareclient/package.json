@@ -44,5 +44,6 @@
     "security"
   ],
   "author": "Biometric DAO Team",
-  "license": "MIT"
+  "license": "MIT",
+  "type": "commonjs"
 }
