@@ -32,11 +32,12 @@
     "ble",
     "zero-knowledge"
   ],
-  "author": "Biometric DAO Team",
-  "license": "MIT",
+  "author": "HighTech Biometric Solutions",
+  "license": "PROPRIETARY",
+  "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/biometric-dao/voting-system.git"
+    "url": "https://github.com/prior89/DAO.git"
   },
   "workspaces": [
     "contracts",
