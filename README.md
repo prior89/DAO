@@ -1,9 +1,6 @@
-# 🔐 Biometric DAO Voting System (PROPRIETARY)
+# Biometric DAO Voting System
 
-**⚠️ CONFIDENTIAL AND PROPRIETARY SOFTWARE ⚠️**
-
-Advanced biometric voting system with hardware security terminal integration.
-**Copyright © 2024 HighTech Biometric Solutions. All Rights Reserved.**
+분산원장 기반 전자투표를 위한 하드웨어 보안 단말기와 연동되는 DAO 소프트웨어 시스템
 
 ## 시스템 개요
 
@@ -118,31 +115,25 @@ npm test
 - 배당 정책 결정
 - 사업 전략 투표
 
-## 🔒 라이선스 및 보안
+## 라이선스
 
-**PROPRIETARY LICENSE - All Rights Reserved**
+MIT License
 
-이 소프트웨어는 HighTech Biometric Solutions의 독점 소유물입니다.
+## 기여하기
 
-### ⚠️ 사용 제한사항
-- 평가 및 승인된 용도로만 사용 가능
-- 상업적 사용 시 별도 라이선스 계약 필요
-- 리버스 엔지니어링, 역컴파일, 분해 금지
-- 소스코드 접근은 승인된 인원에게만 제한
-- 명시적 허가 없는 배포 엄격히 금지
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-### 📞 라이선스 문의
-- **이메일**: licensing@hightech-biometric.com
-- **전화**: +82-2-1234-5678
-- **웹사이트**: https://hightech-biometric.com
+## ⚠️ 중요 고지
 
-## 🚫 기여 정책
+**이 프로젝트는 개념 증명(Proof of Concept) 및 연구 목적으로 개발되었습니다.**
 
-이 프로젝트는 비공개 독점 소프트웨어입니다.
-- 외부 기여는 받지 않습니다
-- Fork 및 Pull Request 불가
-- 승인된 개발팀만 접근 가능
+- 실제 선거나 중요한 투표에 사용하기 전에 전문적인 보안 감사가 필요합니다
+- 모든 암호화 및 보안 구현은 프로토타입 수준입니다
+- 실제 하드웨어 보안 모듈(HSM) 통합이 필요합니다
+- 정부 인증 및 규제 승인이 필요할 수 있습니다
 
-## 보안 고지
-
-이 시스템은 방어적 보안 도구로 설계되었습니다. 악의적인 용도로 사용하지 마십시오.
+**교육 및 연구 목적으로만 사용하시기 바랍니다.**

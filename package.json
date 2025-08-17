@@ -32,9 +32,8 @@
     "ble",
     "zero-knowledge"
   ],
-  "author": "HighTech Biometric Solutions",
-  "license": "PROPRIETARY",
-  "private": true,
+  "author": "Biometric DAO Team",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/prior89/DAO.git"
