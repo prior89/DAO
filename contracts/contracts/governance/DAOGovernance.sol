@@ -66,6 +66,11 @@ contract DAOGovernance is
     mapping(uint256 => mapping(address => bool)) public hasBiometricVoted;
     mapping(uint256 => uint256) public biometricVoteCount;
     
+    // Biometric DAO voting rights management system
+    mapping(address => uint256) public biometricVotingPower;
+    mapping(string => bool) public usedBiometricEligibilityIds;
+    mapping(address => uint256[]) private _userBiometricTokens;
+    
     VotingManager public immutable votingManager;
     BiometricVerifier public immutable biometricVerifier;
     GovernanceType public immutable governanceType;
@@ -93,6 +98,22 @@ contract DAOGovernance is
     );
 
     event BiometricVotingEnabled(uint256 proposalId, BiometricVotingParams params);
+    
+    // Biometric DAO voting rights events
+    event BiometricVotingRightsMinted(
+        uint256 indexed tokenId,
+        address indexed voter,
+        string biometricEligibilityId,
+        uint256 votingPower
+    );
+    
+    event BiometricVotingRightsBurned(uint256 indexed tokenId);
+    
+    event BiometricVotingRightsTransferred(
+        uint256 indexed tokenId,
+        address indexed from,
+        address indexed to
+    );
 
     constructor(
         IVotes _token,
@@ -419,6 +440,100 @@ contract DAOGovernance is
         uint256 weight
     ) internal returns (uint256) {
         return super._castVote(proposalId, account, support, reason);
+    }
+
+    /**
+     * @dev Mint biometric voting rights for DAO governance
+     * @param to Address to receive voting rights
+     * @param voterCategory Category of voter ("DAO_MEMBER", "STAKEHOLDER")
+     * @param biometricEligibilityId Unique biometric eligibility identifier
+     * @param votingPower Voting weight based on biometric authentication
+     */
+    function mintBiometricVotingRights(
+        address to,
+        string memory voterCategory,
+        string memory biometricEligibilityId,
+        uint256 votingPower
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(bytes(biometricEligibilityId).length > 0, "Biometric eligibility ID required");
+        require(!usedBiometricEligibilityIds[biometricEligibilityId], "Biometric eligibility ID already used");
+        require(votingPower > 0, "Voting power must be positive");
+        
+        // Mark biometric eligibility ID as used
+        usedBiometricEligibilityIds[biometricEligibilityId] = true;
+        
+        // Add to user's biometric voting power
+        biometricVotingPower[to] += votingPower;
+        
+        // Track user biometric voting tokens
+        uint256 tokenCount = _userBiometricTokens[to].length;
+        _userBiometricTokens[to].push(tokenCount + 1);
+        
+        emit BiometricVotingRightsMinted(
+            tokenCount + 1,
+            to,
+            biometricEligibilityId,
+            votingPower
+        );
+    }
+
+    /**
+     * @dev Burn biometric voting rights for security
+     * @param voter Address to remove voting rights from
+     * @param biometricEligibilityId Biometric eligibility ID to burn
+     */
+    function burnBiometricVotingRights(
+        address voter,
+        string memory biometricEligibilityId
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(usedBiometricEligibilityIds[biometricEligibilityId], "Biometric eligibility ID not found");
+        require(biometricVotingPower[voter] > 0, "No biometric voting power to burn");
+        
+        // Reset biometric voting power
+        biometricVotingPower[voter] = 0;
+        
+        // Clear user biometric tokens
+        delete _userBiometricTokens[voter];
+        
+        // Mark biometric eligibility as available again
+        usedBiometricEligibilityIds[biometricEligibilityId] = false;
+        
+        emit BiometricVotingRightsBurned(0); // Placeholder token ID
+    }
+
+    /**
+     * @dev Get user's biometric voting power
+     * @param user User address
+     */
+    function getUserBiometricVotingPower(address user) external view returns (uint256) {
+        return biometricVotingPower[user];
+    }
+
+    /**
+     * @dev Transfer biometric voting rights with privacy protection
+     * @param from Current holder
+     * @param to New holder  
+     * @param biometricEligibilityId Biometric eligibility ID to transfer
+     */
+    function transferBiometricVotingRightsWithPrivacy(
+        address from,
+        address to,
+        string memory biometricEligibilityId
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(biometricVotingPower[from] > 0, "No biometric voting power to transfer");
+        require(usedBiometricEligibilityIds[biometricEligibilityId], "Invalid biometric eligibility ID");
+        
+        uint256 votingPower = biometricVotingPower[from];
+        
+        // Burn from source (privacy protection)
+        biometricVotingPower[from] = 0;
+        delete _userBiometricTokens[from];
+        
+        // Mint to destination (fresh identity)
+        biometricVotingPower[to] = votingPower;
+        _userBiometricTokens[to].push(_userBiometricTokens[to].length + 1);
+        
+        emit BiometricVotingRightsTransferred(0, from, to);
     }
 
     function _initializeGovernanceParams() private {
