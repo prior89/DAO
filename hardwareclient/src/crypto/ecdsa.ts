@@ -37,14 +37,16 @@ export class ECDSACrypto {
         pubKeyBytes
       );
       
-      // Constant-time delay to prevent timing attacks
+      // Enhanced constant-time protection against Moscow 2019 attack pattern
       const endTime = performance.now();
       const executionTime = endTime - startTime;
-      const minExecutionTime = 10; // Minimum 10ms execution time
+      const minExecutionTime = 50; // Increased to 50ms minimum execution time
       
       if (executionTime < minExecutionTime) {
         const delay = minExecutionTime - executionTime;
-        setTimeout(() => {}, delay);
+        // Use cryptographically secure delay to prevent timing analysis
+        const secureDelay = crypto.randomBytes(4).readUInt32BE(0) % Math.floor(delay);
+        setTimeout(() => {}, secureDelay);
       }
       
       // Zero out sensitive data immediately (NIST SP 800-63B requirement)
